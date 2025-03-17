@@ -68,7 +68,6 @@ dependencies = [
  "porter-stemmer",
  "rusqlite",
  "sqlite3ext-sys",
- "unicode-segmentation",
 ]
 
 [[package]]

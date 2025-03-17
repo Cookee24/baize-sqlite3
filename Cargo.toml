@@ -7,7 +7,6 @@ edition = "2024"
 sqlite3ext-sys = "0"
 jieba = { version = "0", package = "jieba-rs", optional = true, default-features = false }
 porter-stemmer = { version = "0", optional = true }
-unicode-segmentation = "1"
 defer-lite = "1"
 
 [dev-dependencies]
