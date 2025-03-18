@@ -1,6 +1,6 @@
 use std::num::NonZero;
 
-use sqlite3ext_sys::FTS5_TOKENIZE_DOCUMENT;
+use rusqlite::ffi::FTS5_TOKENIZE_DOCUMENT;
 
 use super::{Token, TokenizerImpl};
 

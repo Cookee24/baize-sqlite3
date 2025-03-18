@@ -148,7 +148,7 @@ fn is_chinese_delimiter(c: char) -> bool {
 #[cfg(test)]
 mod test {
     use crate::tokenize::TokenizerImpl;
-    use sqlite3ext_sys::FTS5_TOKENIZE_DOCUMENT;
+    use rusqlite::ffi::FTS5_TOKENIZE_DOCUMENT;
 
     use super::Simple;
 

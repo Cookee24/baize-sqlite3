@@ -3,7 +3,7 @@ use std::{
     num::NonZero,
 };
 
-use sqlite3ext_sys::*;
+use rusqlite::ffi::*;
 
 use crate::not_ok_return;
 

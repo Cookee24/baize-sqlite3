@@ -1,7 +1,7 @@
 use std::ffi::c_int;
 
 use reg::register_tokenizer;
-use sqlite3ext_sys::*;
+use rusqlite::ffi::*;
 
 mod query;
 mod reg;

@@ -1,6 +1,6 @@
 use std::ffi::{CString, c_char, c_int, c_void};
 
-use sqlite3ext_sys::*;
+use rusqlite::ffi::*;
 
 use crate::{SQLITE3_PLUGIN_API, not_ok_return, tokenize::GetTokenizer};
 
