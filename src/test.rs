@@ -62,12 +62,15 @@ fn test_jieba() -> anyhow::Result<()> {
         assert_eq!(data, 1);
         Ok(())
     })?;
-    db.query_row("SELECT 1 FROM test WHERE test MATCH '清华大学'", [], |row| {
-        let data: i64 = row.get(0)?;
-        assert_eq!(data, 1);
-        Ok(())
-    })?;
-
+    db.query_row(
+        "SELECT 1 FROM test WHERE test MATCH '清华大学'",
+        [],
+        |row| {
+            let data: i64 = row.get(0)?;
+            assert_eq!(data, 1);
+            Ok(())
+        },
+    )?;
 
     Ok(())
 }

@@ -1,5 +1,7 @@
 use std::num::NonZero;
 
+use sqlite3ext_sys::FTS5_TOKENIZE_DOCUMENT;
+
 use super::{Token, TokenizerImpl};
 
 pub struct Jieba {
@@ -19,7 +21,12 @@ impl TokenizerImpl for Jieba {
 
     fn tokenize(&self, text: &str, _flags: i32) -> Result<Vec<Token>, NonZero<i32>> {
         let jieba = &self.jieba;
-        let tokens = jieba.tokenize(text, jieba::TokenizeMode::Search, false);
+        let is_document = _flags & FTS5_TOKENIZE_DOCUMENT as i32 != 0;
+        let tokens = if is_document {
+            jieba.tokenize(text, jieba::TokenizeMode::Search, false)
+        } else {
+            jieba.tokenize(text, jieba::TokenizeMode::Default, false)
+        };
 
         let tokens = tokens.into_iter().map(|t| Token {
             text: t.word.to_string(),
