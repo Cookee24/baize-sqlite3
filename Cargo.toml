@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-rusqlite = { version = "0", features = ["loadable_extension"] }
+rusqlite = "0"
 jieba = { version = "0", package = "jieba-rs", optional = true, default-features = false }
 porter-stemmer = { version = "0", optional = true }
 defer-lite = "1"
@@ -21,3 +21,4 @@ default = ["jieba", "jieba-default-dict", "porter"]
 jieba = ["dep:jieba"]
 jieba-default-dict = ["jieba/default-dict"]
 porter = ["dep:porter-stemmer"]
+dynamic = ["rusqlite/loadable_extension"]

@@ -2,7 +2,9 @@ use std::ffi::{CString, c_char, c_int, c_void};
 
 use rusqlite::ffi::*;
 
-use crate::{SQLITE3_PLUGIN_API, not_ok_return, tokenize::GetTokenizer};
+#[cfg(feature = "dynamic")]
+use crate::SQLITE3_PLUGIN_API;
+use crate::{not_ok_return, tokenize::GetTokenizer};
 
 pub unsafe fn register_tokenizer<T: GetTokenizer>(
     name: &[u8],
@@ -33,6 +35,7 @@ fn get_fts5_api(db: *mut sqlite3, pp_api: *mut *mut fts5_api) -> c_int {
     unsafe {
         *pp_api = std::ptr::null_mut();
 
+        #[cfg(feature = "dynamic")]
         not_ok_return!((*SQLITE3_PLUGIN_API).prepare.unwrap()(
             db,
             sql.as_ptr(),
@@ -41,6 +44,16 @@ fn get_fts5_api(db: *mut sqlite3, pp_api: *mut *mut fts5_api) -> c_int {
             std::ptr::null_mut()
         ));
 
+        #[cfg(not(feature = "dynamic"))]
+        not_ok_return!(sqlite3_prepare_v2(
+            db,
+            sql.as_ptr(),
+            -1,
+            &mut stmt,
+            std::ptr::null_mut()
+        ));
+
+        #[cfg(feature = "dynamic")]
         not_ok_return!((*SQLITE3_PLUGIN_API).bind_pointer.unwrap()(
             stmt,
             1,
@@ -49,11 +62,29 @@ fn get_fts5_api(db: *mut sqlite3, pp_api: *mut *mut fts5_api) -> c_int {
             None,
         ));
 
+        #[cfg(not(feature = "dynamic"))]
+        not_ok_return!(sqlite3_bind_pointer(
+            stmt,
+            1,
+            pp_api as *mut c_void,
+            b"fts5_api_ptr\0".as_ptr() as *const c_char,
+            None,
+        ));
+
+        #[cfg(feature = "dynamic")]
         let step_result = (*SQLITE3_PLUGIN_API).step.unwrap()(stmt);
+
+        #[cfg(not(feature = "dynamic"))]
+        let step_result = sqlite3_step(stmt);
+
         if step_result != SQLITE_ROW as c_int {
             return step_result;
         }
 
-        (*SQLITE3_PLUGIN_API).finalize.unwrap()(stmt)
+        #[cfg(feature = "dynamic")]
+        return (*SQLITE3_PLUGIN_API).finalize.unwrap()(stmt);
+
+        #[cfg(not(feature = "dynamic"))]
+        return sqlite3_finalize(stmt);
     }
 }
